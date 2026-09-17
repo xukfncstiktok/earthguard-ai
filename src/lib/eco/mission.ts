@@ -247,6 +247,19 @@ function reducer(state: MissionState, action: Action): MissionState {
       return init();
     case "select":
       return { ...state, selected: action.id };
+    case "live": {
+      if (state.liveAt === action.at) return state;
+      const hottest = Object.entries(action.stress).sort((a, b) => b[1] - a[1])[0];
+      const name = state.regions.find((r) => r.id === hottest?.[0])?.name ?? "—";
+      return pushEvent(
+        { ...state, live: action.stress, liveAt: action.at },
+        {
+          level: "info",
+          source: "INGEST",
+          text: `Live climate ingest synced — observed heat/water-deficit from Open-Meteo now driving degradation rates. Highest real-world stress: ${name} (×${(hottest?.[1] ?? 1).toFixed(2)}).`,
+        },
+      );
+    }
     case "setAuto": {
       if (state.auto === action.value) return state;
       return pushEvent({ ...state, auto: action.value }, {
@@ -300,18 +313,21 @@ function reducer(state: MissionState, action: Action): MissionState {
       // global escalation term: unmanaged time makes every threat compound
       const escalation = 1 + tick / 260;
       const regions = state.regions.map((r) => {
+        // real observed climate stress for this region (1 = neutral)
+        const stress = state.live[r.id] ?? 1;
         // mitigation coverage decays exponentially once deployed
         const mitigation = Math.max(0, r.mitigation * 0.93);
         const shield = Math.min(0.92, mitigation);
 
         // threat intensity: grows with pressure + unresolved alerts, suppressed by coverage
-        const growth = r.pressure * 0.014 * escalation + r.alerts * 0.012;
+        const growth = (r.pressure * 0.014 * escalation + r.alerts * 0.012) * stress;
         const suppression = shield * 0.11;
         const intensity = Math.max(0, Math.min(1, r.intensity + growth - suppression));
 
         // degradation per time-step, amplified near tipping point (<25 integrity)
         const tipping = r.health < 25 ? 1.35 : 1;
-        const loss = r.pressure * escalation * (0.55 + intensity) * tipping * (1 - shield);
+        const loss =
+          r.pressure * escalation * stress * (0.55 + intensity) * tipping * (1 - shield);
         const recovery = mitigation * 2.9 * (1 - intensity * 0.35);
         const health = Math.max(4, Math.min(100, r.health + recovery - loss));
 
