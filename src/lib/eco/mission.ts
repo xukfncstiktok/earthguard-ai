@@ -49,6 +49,9 @@ export interface MissionState {
   momentum: number;
   /** last strike target for the 3D vector flash */
   strike: { id: string; intervention: InterventionId; seq: number } | null;
+  /** live observed climate stress multiplier per region (1 = neutral) */
+  live: Record<string, number>;
+  liveAt: string | null;
 }
 
 export type Status = "stable" | "strained" | "critical";
