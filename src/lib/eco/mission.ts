@@ -494,6 +494,19 @@ export function useMission() {
 
   const criticals = state.regions.filter((r) => statusOf(r.health) === "critical").length;
   const covered = state.regions.filter((r) => r.mitigation > 0.25).length;
+
+  /** feature vector handed to the in-browser learning model */
+  const features = useMemo(() => {
+    const n = state.regions.length;
+    const stressVals = state.regions.map((r) => state.live[r.id] ?? 1);
+    return {
+      intensity: state.regions.reduce((a, r) => a + r.intensity, 0) / n,
+      coverage: state.regions.reduce((a, r) => a + r.mitigation, 0) / n,
+      critical: state.regions.filter((r) => statusOf(r.health) === "critical").length / n,
+      momentum: state.momentum,
+      stress: stressVals.reduce((a, b) => a + b, 0) / n,
+    };
+  }, [state.regions, state.momentum, state.live]);
   const activeThreats = state.regions.reduce(
     (a, r) => a + r.alerts + (r.intensity > 0.45 && r.mitigation < 0.25 ? 1 : 0),
     0,
