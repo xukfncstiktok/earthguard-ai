@@ -522,6 +522,11 @@ export function useMission() {
     criticals,
     covered,
     activeThreats,
+    features,
+    setLive: useCallback(
+      (stress: Record<string, number>, at: string) => dispatch({ type: "live", stress, at }),
+      [],
+    ),
     select: useCallback((id: string) => dispatch({ type: "select", id }), []),
     deploy: useCallback((i: InterventionId) => dispatch({ type: "deploy", intervention: i }), []),
     deployAt: useCallback(
