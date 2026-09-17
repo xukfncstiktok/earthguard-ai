@@ -113,6 +113,8 @@ function init(): MissionState {
     auto: false,
     momentum: 0,
     strike: null,
+    live: {},
+    liveAt: null,
   };
 }
 
@@ -125,6 +127,7 @@ type Action =
   | { type: "log"; level: MissionEvent["level"]; source: string; text: string }
   | { type: "clearLog" }
   | { type: "toggle" }
+  | { type: "live"; stress: Record<string, number>; at: string }
   | { type: "reset" };
 
 function pushEvent(s: MissionState, e: Omit<MissionEvent, "id" | "tick">): MissionState {
