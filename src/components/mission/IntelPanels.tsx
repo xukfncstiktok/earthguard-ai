@@ -12,7 +12,7 @@ export function LiveBadge({
 }: {
   isLive: boolean;
   isLoading: boolean;
-  fetchedAt?: string;
+  fetchedAt?: string | undefined;
 }) {
   const label = isLoading ? "linking…" : isLive ? "live ingest" : "offline model";
   return (
@@ -35,7 +35,7 @@ export function LiveBadge({
 
 const fmt = (n: number, unit: string) => `${n.toFixed(n >= 100 ? 0 : 1)}${unit}`;
 
-export function RegionLive({ live }: { live?: LiveClimate }) {
+export function RegionLive({ live }: { live?: LiveClimate | undefined }) {
   if (!live) {
     return (
       <p className="label-mono rounded-md border border-dashed border-border/70 px-2.5 py-2">
@@ -63,7 +63,7 @@ export function RegionLive({ live }: { live?: LiveClimate }) {
           stress ×{live.stress.toFixed(2)}
         </span>
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {items.map(({ Icon, l, v }) => (
           <div key={l} className="rounded-md bg-surface-2/50 px-2.5 py-2">
             <p className="label-mono flex items-center gap-1">
@@ -105,7 +105,7 @@ export function ModelPanel({
         </p>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {[
           { l: "samples", v: String(report.samples) },
           { l: "GD epochs", v: String(report.epochs) },
@@ -175,7 +175,7 @@ export function ClimateStressRail({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex max-w-full gap-1.5 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
       {regions.map((r) => {
         const s = live[r.id]?.stress;
         return (
@@ -184,7 +184,7 @@ export function ClimateStressRail({
             onClick={() => onSelect(r.id)}
             title={`${r.name}${s ? ` — observed stress ×${s.toFixed(2)}` : ""}`}
             className={cn(
-              "numeric rounded border px-1.5 py-0.5 text-[0.6rem] transition-colors",
+              "numeric min-h-8 shrink-0 rounded border px-2 py-1 text-[0.6rem] transition-colors sm:min-h-0 sm:px-1.5 sm:py-0.5",
               s === undefined && "border-border text-muted-foreground",
               s !== undefined && s > 1.08 && "border-crit/50 bg-crit/10 text-crit",
               s !== undefined && s <= 1.08 && s >= 0.98 && "border-warn/50 bg-warn/10 text-warn",

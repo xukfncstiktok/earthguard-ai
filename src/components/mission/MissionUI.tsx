@@ -34,9 +34,9 @@ export function Panel({
 }) {
   return (
     <section className={cn("panel flex min-h-0 flex-col", className)}>
-      <header className="flex items-center justify-between gap-3 border-b border-border/70 px-4 py-2.5">
-        <h2 className="label-mono text-foreground/70">{title}</h2>
-        {right}
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/70 px-3 py-2.5 sm:px-4">
+        <h2 className="label-mono min-w-0 truncate text-foreground/70">{title}</h2>
+        <span className="shrink-0">{right}</span>
       </header>
       <div className={cn("min-h-0 flex-1 p-4", bodyClass)}>{children}</div>
     </section>
@@ -101,14 +101,14 @@ export function MissionHeader({
 }) {
   const status = statusOf(health);
   return (
-    <header className="panel flex flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3">
-      <div className="flex items-center gap-3">
+    <header className="panel grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-3 py-3 sm:px-4 lg:flex lg:flex-wrap lg:gap-x-6">
+      <div className="flex min-w-0 items-center gap-3">
         <span className="relative flex size-9 items-center justify-center rounded-md bg-surface-2">
           <Leaf className="size-4 text-primary" />
           <span className="absolute inset-0 rounded-md ring-1 ring-primary/30" />
         </span>
-        <div>
-          <h1 className="font-display text-sm font-bold tracking-[0.22em] text-foreground">
+        <div className="min-w-0">
+          <h1 className="truncate font-display text-sm font-bold tracking-[0.22em] text-foreground">
             ECOGRID<span className="text-primary">·</span>AI
           </h1>
           <p className="label-mono mt-0.5">Planetary biosphere command</p>
@@ -117,7 +117,7 @@ export function MissionHeader({
 
       <div className="hidden h-8 w-px bg-border md:block" />
 
-      <div className="flex items-center gap-2">
+      <div className="hidden items-center gap-2 sm:flex">
         <span className={cn("size-1.5 rounded-full animate-eco-pulse", statusDot[status])} />
         <span className="label-mono">Grid status</span>
         <span className={cn("numeric text-xs font-bold uppercase", statusStyles[status])}>
@@ -125,19 +125,19 @@ export function MissionHeader({
         </span>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="hidden items-center gap-2 md:flex">
         <span className="label-mono">MET</span>
         <span className="numeric text-xs text-foreground/80">{clock}</span>
       </div>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="col-span-2 grid grid-cols-3 gap-2 lg:col-span-1 lg:ml-auto lg:flex lg:items-center">
         <button
           type="button"
           role="switch"
           aria-checked={auto}
           onClick={() => onAutoChange(!auto)}
           className={cn(
-            "inline-flex items-center gap-2.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-all",
+            "inline-flex min-h-11 items-center justify-center gap-2 rounded-md border px-2 py-1.5 text-xs font-medium transition-all sm:px-3 lg:min-h-0",
             auto
               ? "border-primary/60 bg-primary/10 text-primary glow-bio"
               : "border-border bg-surface-2 text-muted-foreground hover:border-primary/40 hover:text-foreground",
@@ -162,14 +162,14 @@ export function MissionHeader({
         </button>
         <button
           onClick={onToggle}
-          className="inline-flex items-center gap-2 rounded-md border border-border bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border bg-surface-2 px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary sm:px-3 lg:min-h-0"
         >
           {running ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
           {running ? "Hold sim" : "Resume"}
         </button>
         <button
           onClick={onReset}
-          className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-2 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent sm:px-3 lg:min-h-0"
         >
           <RotateCcw className="size-3.5" />
           Restart
@@ -343,7 +343,7 @@ export function RegionDossier({ region }: { region: RegionState }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="label-mono">{region.code} · {region.biome}</p>
-          <h3 className="font-display text-xl font-semibold text-foreground">{region.name}</h3>
+        <h3 className="font-display text-xl font-semibold text-foreground break-words">{region.name}</h3>
         </div>
         <span
           className={cn(
@@ -368,7 +368,7 @@ export function RegionDossier({ region }: { region: RegionState }) {
         ].map((x) => (
           <div key={x.l} className="rounded-md bg-surface-2/50 px-2.5 py-2">
             <p className="label-mono">{x.l}</p>
-            <p className="numeric mt-1 truncate text-xs text-foreground">{x.v}</p>
+            <p className="numeric mt-1 break-words text-xs text-foreground">{x.v}</p>
           </div>
         ))}
       </div>
@@ -417,7 +417,7 @@ export function CommandDeck({
         </div>
       </div>
 
-      <div className="grid max-h-72 gap-2 overflow-y-auto pr-1 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-2 pr-0 sm:max-h-72 sm:grid-cols-2 sm:overflow-y-auto sm:pr-1 xl:grid-cols-4">
         {INTERVENTIONS.map((plan) => {
           const cd = cooldowns[plan.id];
           const matched = plan.counters.includes(regionThreat);
@@ -429,7 +429,7 @@ export function CommandDeck({
               onClick={() => onDeploy(plan.id)}
               disabled={disabled}
               className={cn(
-                "group relative overflow-hidden rounded-md border p-3 text-left transition-all",
+                "group relative min-h-24 overflow-hidden rounded-md border p-3 text-left transition-all",
                 matched && !disabled
                   ? "border-primary/50 bg-primary/10 hover:bg-primary/15 glow-bio"
                   : "border-border bg-surface-2/40 hover:border-accent/40",

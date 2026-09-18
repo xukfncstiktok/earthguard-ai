@@ -138,11 +138,48 @@
 /* ---- Utilities ---- */
 
 @utility panel {
-  background: color-mix(in oklab, var(--surface) 72%, transparent);
+  background: color-mix(in oklab, var(--surface) 86%, transparent);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-panel);
   backdrop-filter: blur(14px);
+}
+
+@media (max-width: 640px) {
+  .grid-lines {
+    background-size: 32px 32px;
+  }
+
+  .scanline::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  body {
+    background: var(--background);
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  .panel {
+    break-inside: avoid;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
 }
 
 @utility label-mono {
