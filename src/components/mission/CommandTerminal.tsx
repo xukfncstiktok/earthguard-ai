@@ -196,7 +196,7 @@ export function CommandTerminal(api: TerminalApi) {
 
       {open && (
         <div className="p-3" onClick={() => inputRef.current?.focus()}>
-          <div className="numeric max-h-44 space-y-0.5 overflow-y-auto pr-1 text-[0.72rem] leading-relaxed">
+          <div className="numeric max-h-[50vh] space-y-0.5 overflow-y-auto pr-1 text-[0.72rem] leading-relaxed sm:max-h-44">
             {lines.map((l) => (
               <p
                 key={l.id}
@@ -216,7 +216,7 @@ export function CommandTerminal(api: TerminalApi) {
           </div>
 
           <div className="mt-2 flex items-center gap-2 rounded-md border border-border bg-surface-2/50 px-3 py-2">
-            <span className="numeric text-[0.72rem] text-primary">ecogrid@orbit:~$</span>
+            <span className="numeric hidden text-[0.72rem] text-primary sm:inline">ecogrid@orbit:~$</span>
             <input
               ref={inputRef}
               value={value}

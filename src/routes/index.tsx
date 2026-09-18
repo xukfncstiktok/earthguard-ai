@@ -31,6 +31,7 @@ const description =
   "Live mission control for Earth's biosphere: real observed climate data for 12 sentinel regions on a 3D globe, an in-browser AI model that learns the planet's response, and autonomous countermeasure deployment.";
 
 export const Route = createFileRoute("/")({
+  ssr: false,
   head: () => ({
     meta: [
       { title },
@@ -92,7 +93,7 @@ function Index() {
             onAutoChange={setAuto}
           />
 
-          <div className="panel flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5">
+          <div className="panel flex flex-col items-stretch gap-2 px-3 py-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:px-4">
             <LiveBadge
               isLive={climate.isLive}
               isLoading={climate.isLoading}
@@ -101,16 +102,18 @@ function Index() {
             <span className="label-mono hidden sm:inline">
               real observed heat &amp; water deficit · Open-Meteo
             </span>
-            <ClimateStressRail regions={state.regions} live={climate.byId} onSelect={select} />
+            <div className="min-w-0 flex-1">
+              <ClimateStressRail regions={state.regions} live={climate.byId} onSelect={select} />
+            </div>
             <Link
               to="/briefing"
-              className="label-mono ml-auto rounded-md border border-accent/40 px-2.5 py-1 text-accent transition-colors hover:bg-accent/10"
+              className="label-mono shrink-0 self-start rounded-md border border-accent/40 px-2.5 py-2 text-accent transition-colors hover:bg-accent/10 sm:ml-auto sm:self-auto"
             >
               mission briefing →
             </Link>
           </div>
 
-          <div className="grid gap-3 xl:grid-cols-[260px_minmax(0,1fr)_340px]">
+          <div className="grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-[260px_minmax(0,1fr)_340px]">
             {/* left rail */}
             <div className="flex min-h-0 flex-col gap-3">
               <Panel
@@ -120,7 +123,7 @@ function Index() {
                     {covered}/{state.regions.length} covered
                   </span>
                 }
-                className="xl:h-[420px]"
+                className="md:h-[420px] xl:h-[420px]"
                 bodyClass="p-2"
               >
                 <RegionList regions={state.regions} selected={state.selected} onSelect={select} />
@@ -159,9 +162,9 @@ function Index() {
                 </span>
               }
               bodyClass="p-0"
-              className="scanline relative overflow-hidden"
+              className="scanline relative min-w-0 overflow-hidden md:col-span-2 xl:col-span-1"
             >
-              <div className="h-[46vh] min-h-[320px] w-full xl:h-[560px]">
+              <div className="h-[clamp(380px,54vh,620px)] w-full sm:h-[clamp(430px,56vh,640px)] xl:h-[560px]">
                 <EarthGlobe
                   regions={state.regions}
                   selected={state.selected}
@@ -169,7 +172,7 @@ function Index() {
                   strike={state.strike}
                 />
               </div>
-              <div className="pointer-events-none absolute bottom-3 left-4 flex flex-wrap items-center gap-4">
+              <div className="pointer-events-none absolute bottom-3 left-3 flex flex-wrap items-center gap-3 sm:left-4 sm:gap-4">
                 {(
                   [
                     ["Stable", "bg-primary"],
@@ -186,8 +189,8 @@ function Index() {
             </Panel>
 
             {/* right rail */}
-            <div className="flex min-h-0 flex-col gap-3">
-              <div className="grid grid-cols-2 gap-3">
+            <div className="flex min-h-0 flex-col gap-3 md:col-span-2 xl:col-span-1">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4 xl:grid-cols-2">
                 <StatTile
                   label="Integrity"
                   value={health.toFixed(1)}
@@ -225,7 +228,7 @@ function Index() {
                 planName={advisory.plan.name}
                 reason={`${THREAT_LABEL[advisory.target.threat]} is driving the steepest loss there, with ${advisory.target.carbonAtRisk} Mt CO₂e exposed${
                   climate.byId[advisory.target.id]
-                    ? ` and observed climate stress running ×${climate.byId[advisory.target.id]!.stress.toFixed(2)}`
+                    ? ` and observed climate stress running ×${climate.byId[advisory.target.id]?.stress.toFixed(2)}`
                     : ""
                 }.`}
                 onJump={() => select(advisory.target.id)}
@@ -243,7 +246,7 @@ function Index() {
           </div>
 
           {/* intelligence row */}
-          <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div className="grid min-w-0 gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
             <Panel
               title="Predictive core · online learning"
               right={
